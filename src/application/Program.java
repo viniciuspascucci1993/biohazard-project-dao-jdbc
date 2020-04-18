@@ -12,6 +12,8 @@ public class Program {
 		
 		OficialDAO dao = DAOFactory.createOficialDao();
 		
+		System.out.println("=== TESTE [1]: Oficial findById ===");
+		
 		Oficial oficial = dao.findById(2);
 		
 		System.out.println(oficial);

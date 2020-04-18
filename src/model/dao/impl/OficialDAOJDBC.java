@@ -59,17 +59,9 @@ public class OficialDAOJDBC implements OficialDAO {
 			resultSet = preparedStatement.executeQuery();
 			
 			if (resultSet.next()) {
-				Departamento dep = new Departamento();
-				dep.setId(resultSet.getInt("id"));
-				dep.setNome(resultSet.getString("departamento"));
+				Departamento dep = instantiateDepartamento( resultSet );
 				
-				Oficial oficial = new Oficial();
-				oficial.setId(resultSet.getInt("id"));
-				oficial.setNome(resultSet.getString("nome"));
-				oficial.setEmail(resultSet.getString("email"));
-				oficial.setEquipe(resultSet.getString("equipe"));
-				oficial.setNascimento(resultSet.getDate("nascimento"));
-				oficial.setDepartamento(dep);
+				Oficial oficial = instantiateOficial( resultSet, dep );
 				
 				return oficial;
 			}
@@ -82,6 +74,26 @@ public class OficialDAOJDBC implements OficialDAO {
 			DBConnector.cloaseResultSet(resultSet);
 		}
 		
+	}
+
+	private Oficial instantiateOficial(ResultSet resultSet, Departamento dep) throws SQLException {
+		 Oficial oficial = new Oficial();
+			oficial.setId(resultSet.getInt("id"));
+			oficial.setNome(resultSet.getString("nome"));
+			oficial.setEmail(resultSet.getString("email"));
+			oficial.setEquipe(resultSet.getString("equipe"));
+			oficial.setNascimento(resultSet.getDate("nascimento"));
+			oficial.setDepartamento(dep);
+		
+			return oficial;
+	}
+
+	private Departamento instantiateDepartamento(ResultSet resultSet) throws SQLException {
+		Departamento dep = new Departamento();
+		dep.setId(resultSet.getInt("id"));
+		dep.setNome(resultSet.getString("departamento"));
+		
+		return dep;
 	}
 
 	@Override
