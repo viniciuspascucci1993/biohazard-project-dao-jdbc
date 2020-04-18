@@ -3,6 +3,7 @@ package application;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import model.dao.DAOFactory;
 import model.dao.OficialDAO;
@@ -12,6 +13,8 @@ import model.entities.Oficial;
 public class Program {
 
 	public static void main(String[] args) throws ParseException {
+		
+		Scanner sc = new Scanner(System.in);
 		
 		OficialDAO dao = DAOFactory.createOficialDao();
 		
@@ -58,6 +61,14 @@ public class Program {
 		
 		System.out.println("[UPDATED COMPLETED]");
 		
+		System.out.println("\n=== TESTE [6]: Oficial delete ===");
+		
+		System.out.println("Entre com um [ID] para iniciar a deleção: ");
+		
+		int id = sc.nextInt();
+		dao.deleteById(id);
+		System.out.println("[DELETED COMPLETED]");
+		sc.close();
 	}
 
 }

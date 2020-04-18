@@ -100,7 +100,25 @@ public class OficialDAOJDBC implements OficialDAO {
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
+		
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			preparedStatement = conn.prepareStatement("DELETE FROM oficial WHERE Id = ?");
+			preparedStatement.setInt(1, id);
+			
+			int rows = preparedStatement.executeUpdate();
+			
+			if (rows == 0) {
+				throw new DBException("[IDENTIFICADOR INEXISTENTE] - Impossivel realizar a deleção");
+			}
+			
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage());
+			
+		}finally {
+			DBConnector.cloaseStatment(preparedStatement);
+		}
 		
 	}
 
