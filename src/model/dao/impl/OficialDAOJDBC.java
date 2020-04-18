@@ -101,8 +101,43 @@ public class OficialDAOJDBC implements OficialDAO {
 
 	@Override
 	public List<Oficial> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			preparedStatement = conn.prepareStatement(
+					"SELECT oficial.*,departamento.nome as departamento "
+					+ "FROM oficial INNER JOIN departamento "
+					+ "ON oficial.departamentoId = departamento.id "
+					+ "ORDER BY nome");
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			List<Oficial> list = new ArrayList<>();
+			
+			Map<Integer, Departamento> map = new HashMap<>();
+			
+			while (resultSet.next()) {
+				
+				Departamento dep = map.get(resultSet.getInt("departamentoId"));
+				
+				if (dep == null) {
+					dep = instantiateDepartamento(resultSet);
+					map.put(resultSet.getInt("id"), dep);
+				}
+				
+				Oficial oficial = instantiateOficial( resultSet, dep );
+				
+				list.add(oficial);
+			}
+			return list;
+			
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage());
+		} finally {
+			DBConnector.cloaseStatment(preparedStatement);
+			DBConnector.cloaseResultSet(resultSet);
+		}
 	}
 
 	@Override

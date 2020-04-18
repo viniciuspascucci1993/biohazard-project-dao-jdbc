@@ -30,6 +30,14 @@ public class Program {
 			System.out.println(obj);
 		}
 		
+		System.out.println("\n=== TESTE [3]: Oficial finAll ===");
+		
+		list = dao.findAll();
+		
+		for (Oficial obj : list) {
+			System.out.println(obj);
+		}
+		
 	}
 
 }
