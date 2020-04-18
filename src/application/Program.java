@@ -1,6 +1,7 @@
 package application;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import model.dao.DAOFactory;
@@ -37,6 +38,18 @@ public class Program {
 		for (Oficial obj : list) {
 			System.out.println(obj);
 		}
+		
+		System.out.println("\n=== TESTE [4]: Oficial insert ===");
+		
+		Departamento newDep = new Departamento(4, null);
+		
+		Oficial newOficial = new Oficial( null, "Carlos Oliveira", "carlos.oliveira@umbrella.com", new Date(), "U.B.C.S", newDep);
+		
+		dao.insert(newOficial);
+		
+		System.out.println("[INCLUÍDO! Novo Identificador = ] " + newOficial.getId());
+		
+		
 		
 	}
 

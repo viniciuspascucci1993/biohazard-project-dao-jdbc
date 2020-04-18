@@ -1,9 +1,11 @@
 package model.dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +31,43 @@ public class OficialDAOJDBC implements OficialDAO {
 	
 	@Override
 	public void insert(Oficial oficial) {
-		// TODO Auto-generated method stub
+		
+		PreparedStatement preparedStatement = null;
+		try {
+			
+			preparedStatement = conn.prepareStatement(
+					"INSERT INTO oficial "
+					+ "(nome, email, nascimento, equipe, departamentoId) "
+					+ "VALUES "
+					+ "(?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			
+			preparedStatement.setString(1, oficial.getNome());
+			preparedStatement.setString(2, oficial.getEmail());
+			preparedStatement.setDate(3, new Date(oficial.getNascimento().getTime()));
+			preparedStatement.setString(4, oficial.getEquipe());
+			preparedStatement.setInt(5, oficial.getDepartamento().getId());
+			
+			int rowsAffected = preparedStatement.executeUpdate();
+			
+			if (rowsAffected > 0) {
+				ResultSet resultSet = preparedStatement.getGeneratedKeys();
+				if (resultSet.next()) {
+					int id = resultSet.getInt(1);
+					oficial.setId(id);
+				}
+				
+				DBConnector.cloaseResultSet(resultSet);
+			} else {
+				throw new DBException("ERRO INESPERADO, NENHUMA LINHA FOI AFETADA");
+			}
+			
+			
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage());
+		} finally {
+			DBConnector.cloaseStatment(preparedStatement);
+		}
 		
 	}
 
