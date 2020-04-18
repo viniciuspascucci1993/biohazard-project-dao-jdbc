@@ -73,7 +73,28 @@ public class OficialDAOJDBC implements OficialDAO {
 
 	@Override
 	public void updtae(Oficial oficial) {
-		// TODO Auto-generated method stub
+		PreparedStatement preparedStatement = null;
+		try {
+			
+			preparedStatement = conn.prepareStatement(
+					"UPDATE oficial "
+					+ "SET nome = ?, email = ?, nascimento = ?, equipe = ?, id = ? "
+					+ "WHERE id = ?");		
+			
+			preparedStatement.setString(1, oficial.getNome());
+			preparedStatement.setString(2, oficial.getEmail());
+			preparedStatement.setDate(3, new Date(oficial.getNascimento().getTime()));
+			preparedStatement.setString(4, oficial.getEquipe());
+			preparedStatement.setInt(5, oficial.getDepartamento().getId());
+			preparedStatement.setInt(6, oficial.getId());
+			
+			preparedStatement.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage());
+		} finally {
+			DBConnector.cloaseStatment(preparedStatement);
+		}
 		
 	}
 

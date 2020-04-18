@@ -50,6 +50,13 @@ public class Program {
 		System.out.println("[INCLUÍDO! Novo Identificador = ] " + newOficial.getId());
 		
 		
+		System.out.println("\n=== TESTE [5]: Oficial update ===");
+		
+		oficial = dao.findById(12);
+		oficial.setNome("Carlos Oliveira New");
+		dao.updtae(oficial);
+		
+		System.out.println("[UPDATED COMPLETED]");
 		
 	}
 
