@@ -1,5 +1,6 @@
 package model.dao;
 
+import db.DBConnector;
 import model.dao.impl.OficialDAOJDBC;
 
 /**
@@ -9,6 +10,6 @@ import model.dao.impl.OficialDAOJDBC;
 public class DAOFactory {
 
 	public static OficialDAO createOficialDao() {
-		return new OficialDAOJDBC();
+		return new OficialDAOJDBC( DBConnector.getConnection() );
 	}
 }

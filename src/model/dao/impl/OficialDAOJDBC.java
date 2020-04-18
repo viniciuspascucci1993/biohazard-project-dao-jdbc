@@ -1,8 +1,15 @@
 package model.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
+import db.DBConnector;
+import db.DBException;
 import model.dao.OficialDAO;
+import model.entities.Departamento;
 import model.entities.Oficial;
 
 /**
@@ -11,6 +18,12 @@ import model.entities.Oficial;
  */
 public class OficialDAOJDBC implements OficialDAO {
 
+	private Connection conn;
+	
+	public OficialDAOJDBC( Connection conn) {
+		this.conn = conn;
+	}
+	
 	@Override
 	public void insert(Oficial oficial) {
 		// TODO Auto-generated method stub
@@ -31,8 +44,44 @@ public class OficialDAOJDBC implements OficialDAO {
 
 	@Override
 	public Oficial findById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			preparedStatement = conn.prepareStatement(
+					"SELECT oficial.*, departamento.nome as departamento "
+					+ "FROM oficial INNER JOIN departamento "
+					+ "ON oficial.departamentoId = departamento.id "
+					+ "WHERE oficial.Id = ?");
+			
+			preparedStatement.setInt(1, id);
+			resultSet = preparedStatement.executeQuery();
+			
+			if (resultSet.next()) {
+				Departamento dep = new Departamento();
+				dep.setId(resultSet.getInt("id"));
+				dep.setNome(resultSet.getString("departamento"));
+				
+				Oficial oficial = new Oficial();
+				oficial.setId(resultSet.getInt("id"));
+				oficial.setNome(resultSet.getString("nome"));
+				oficial.setEmail(resultSet.getString("email"));
+				oficial.setEquipe(resultSet.getString("equipe"));
+				oficial.setNascimento(resultSet.getDate("nascimento"));
+				oficial.setDepartamento(dep);
+				
+				return oficial;
+			}
+			return null;
+			
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage());
+		} finally {
+			DBConnector.cloaseStatment(preparedStatement);
+			DBConnector.cloaseResultSet(resultSet);
+		}
+		
 	}
 
 	@Override
