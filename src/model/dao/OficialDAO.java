@@ -2,6 +2,7 @@ package model.dao;
 
 import java.util.List;
 
+import model.entities.Departamento;
 import model.entities.Oficial;
 
 /**
@@ -24,4 +25,7 @@ public interface OficialDAO {
 	
 	// operação que retorna todos os oficiais
 	List<Oficial> findAll();
+	
+	// operação para buscar por departamento
+	List<Oficial> findByDepartamento( Departamento departamento );
 }

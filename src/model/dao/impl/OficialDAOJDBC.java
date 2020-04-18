@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DBConnector;
 import db.DBException;
@@ -100,6 +103,50 @@ public class OficialDAOJDBC implements OficialDAO {
 	public List<Oficial> findAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Oficial> findByDepartamento(Departamento departamento) {
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			preparedStatement = conn.prepareStatement(
+					"SELECT oficial.*,departamento.nome as departamento "
+					+ "FROM oficial INNER JOIN departamento "
+					+ "ON oficial.departamentoId = departamento.id "
+					+ "WHERE departamentoId = ? "
+					+ "ORDER BY nome");
+			
+			preparedStatement.setInt(1, departamento.getId());
+			resultSet = preparedStatement.executeQuery();
+			
+			List<Oficial> list = new ArrayList<>();
+			
+			Map<Integer, Departamento> map = new HashMap<>();
+			
+			while (resultSet.next()) {
+				
+				Departamento dep = map.get(resultSet.getInt("departamentoId"));
+				
+				if (dep == null) {
+					dep = instantiateDepartamento(resultSet);
+					map.put(resultSet.getInt("id"), dep);
+				}
+				
+				Oficial oficial = instantiateOficial( resultSet, dep );
+				
+				list.add(oficial);
+			}
+			return list;
+			
+		} catch (SQLException e) {
+			throw new DBException(e.getMessage());
+		} finally {
+			DBConnector.cloaseStatment(preparedStatement);
+			DBConnector.cloaseResultSet(resultSet);
+		}
 	}
 
 }
